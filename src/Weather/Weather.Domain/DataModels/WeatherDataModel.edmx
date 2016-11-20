@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="WeatherDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Forecast">
+          <Key>
+            <PropertyRef Name="ForecastID" />
+          </Key>
+          <Property Name="ForecastID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocationID" Type="int" Nullable="false" />
+          <Property Name="ValidFrom" Type="datetime" Nullable="false" />
+          <Property Name="ValidTo" Type="datetime" Nullable="false" />
+          <Property Name="Period" Type="int" Nullable="false" />
+          <Property Name="Temperature" Type="int" Nullable="false" />
+          <Property Name="SymbolSrc" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="SymbolAlt" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Country" Type="varchar" MaxLength="50" />
+          <Property Name="Province" Type="varchar" MaxLength="50" />
+          <Property Name="Municipality" Type="varchar" MaxLength="50" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="NextUpdate" Type="datetime2" Precision="0" />
+        </EntityType>
+        <Association Name="FK_Forecast_Location">
+          <End Role="Location" Type="Self.Location" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Forecast" Type="Self.Forecast" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Forecast">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WeatherDataModelStoreContainer">
+          <EntitySet Name="Forecast" EntityType="Self.Forecast" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Forecast_Location" Association="Self.FK_Forecast_Location">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="Forecast" EntitySet="Forecast" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WeatherDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Province" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Municipality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="Longitude" Type="Double" />
+          <NavigationProperty Name="Forecasts" Relationship="WeatherDataModel.FK_Forecast_Location" FromRole="Location" ToRole="Forecast" />
+          <Property Name="NextUpdate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityContainer Name="WeatherEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Locations" EntityType="Self.Location" />
+          <EntitySet Name="Forecasts" EntityType="WeatherDataModel.Forecast" />
+          <AssociationSet Name="FK_Forecast_Location" Association="WeatherDataModel.FK_Forecast_Location">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Forecast" EntitySet="Forecasts" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Forecast">
+          <Key>
+            <PropertyRef Name="ForecastID" />
+          </Key>
+          <Property Name="ForecastID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationID" Type="Int32" Nullable="false" />
+          <Property Name="ValidFrom" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ValidTo" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Period" Type="Int32" Nullable="false" />
+          <Property Name="Temperature" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Location" Relationship="WeatherDataModel.FK_Forecast_Location" FromRole="Forecast" ToRole="Location" />
+          <Property Name="SymbolSrc" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SymbolAlt" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_Forecast_Location">
+          <End Type="WeatherDataModel.Location" Role="Location" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WeatherDataModel.Forecast" Role="Forecast" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Forecast">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WeatherDataModelStoreContainer" CdmEntityContainer="WeatherEntities">
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="WeatherDataModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="NextUpdate" ColumnName="NextUpdate" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="Municipality" ColumnName="Municipality" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Forecasts">
+            <EntityTypeMapping TypeName="WeatherDataModel.Forecast">
+              <MappingFragment StoreEntitySet="Forecast">
+                <ScalarProperty Name="SymbolAlt" ColumnName="SymbolAlt" />
+                <ScalarProperty Name="SymbolSrc" ColumnName="SymbolSrc" />
+                <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+                <ScalarProperty Name="Period" ColumnName="Period" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="ForecastID" ColumnName="ForecastID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

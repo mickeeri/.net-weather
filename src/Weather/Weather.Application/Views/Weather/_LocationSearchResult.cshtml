@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Weather.Domain.Location>
+
+<h4>Sökresultat</h4>
+<table class="table">
+    <tr>
+        <th>
+            Ort
+        </th>
+        <th>
+            Land
+        </th>
+        <th>
+            Region
+        </th>
+        <th>
+            Kommun
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(item.Name, "ChooseLocation", new { id = item.LocationID})
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Country)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Province)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Municipality)
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Weather.Domain.Forecast>
+
+<table class="table">
+    <tr>
+        <th>
+            Tid
+        </th>
+        <th>
+            Väder
+        </th>
+        <th>
+            Temperatur
+        </th>
+    </tr>
+
+@foreach (var item in Model)
+{    
+    <tr>
+        <td>
+            @item.ValidFrom.ToString("dddd d MMMM")
+            @String.Format("Kl {0} - {1}", item.ValidFrom.ToString("HH"), item.ValidTo.ToString("HH"))           
+        </td>
+        <td>            
+            <img src="~/Content/sym/@Url.Content(item.SymbolSrc)" alt="@item.SymbolAlt" />            
+        </td>
+        <td>
+            @String.Format("{0}°C", item.Temperature)
+            @*@Html.DisplayFor(modelItem => item.Temperature)*@
+        </td>
+    </tr>
+}
+
+</table>
